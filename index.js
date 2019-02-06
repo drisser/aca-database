@@ -1,15 +1,17 @@
-
 var http = require('http');
 let server = http.createServer(messageReceived);
 server.listen(8080);
-let {find} = require("./database");
+let {show, find, create} = require("./database");
 
 
 function messageReceived(req, res) {
     res.writeHead(200, {'Content-Type': 'text/plain'});
 
     if(req.method === "GET" && req.url === "/users"){
-      res.end();
+      show("users",(users)=>{
+        res.write(JSON.stringify(users));
+        res.end();
+      })
     }
     else if(req.method === "GET" && req.url.indexOf("/users/") > -1){
       let id = req.url.split("/");
@@ -27,7 +29,7 @@ function messageReceived(req, res) {
           body = Buffer.concat(body).toString();
           let user = JSON.parse(body);
           user._id = users.length + 1;
-         
+          create(user);         
           res.end();
         });
     }
