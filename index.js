@@ -2,6 +2,7 @@
 var http = require('http');
 let server = http.createServer(messageReceived);
 server.listen(8080);
+let {find} = require("./database");
 
 
 function messageReceived(req, res) {
@@ -13,7 +14,10 @@ function messageReceived(req, res) {
     else if(req.method === "GET" && req.url.indexOf("/users/") > -1){
       let id = req.url.split("/");
       id = Number(id[2]);
-      res.end();
+      find("users",id,(user)=>{
+        res.write(JSON.stringify(user));
+        res.end(); 
+      })
     }
     else if(req.method === "POST" && req.url === "/users"){
         let body = [];
