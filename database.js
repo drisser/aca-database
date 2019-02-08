@@ -22,14 +22,15 @@ exports.find = function(type,id,doneCallback){
 
 exports.create = function(type,data,doneCallback){
   //type = "users"
-  let allTheStuff = JSON.parse(data);
-  //allTheStuff = {}
-  //fs.writeFile(file, data[, options], callback)
-
-  fs.writeFile(type, data, (err,data)=>{
-    
+  fs.readFile("db.json", (err,data)=>{
+    let allTheStuff = JSON.parse(data);
     //allTheStuff = {}
+    allTheStuff[type].push(data)
     
+    let thingsAsString = JSON.stringify(allTheStuff)
+    fs.writeFile("db.json", thingsAsString, function(){
+        doneCallback(data);
+    })    
   })
 }
 
